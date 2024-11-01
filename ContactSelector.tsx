@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Check, X } from 'lucide-react';
-
-interface Contact {
-  id: string;
-  name: string;
-  phone: string;
-  group?: string;
-}
+import { Contact } from '../../types';
 
 interface ContactSelectorProps {
   contacts: Contact[];
@@ -64,23 +58,34 @@ function ContactSelector({ contacts, selectedContacts, onSelect, onClose }: Cont
         </div>
 
         <div className="max-h-96 overflow-y-auto mb-4">
-          {filteredContacts.map(contact => (
-            <div
-              key={contact.id}
-              onClick={() => handleToggleContact(contact)}
-              className={`flex items-center justify-between p-3 cursor-pointer rounded-lg ${
-                selected.has(contact.id) ? 'bg-purple-50' : 'hover:bg-gray-50'
-              }`}
-            >
-              <div>
-                <h4 className="font-medium">{contact.name}</h4>
-                <p className="text-sm text-gray-500">{contact.phone}</p>
-              </div>
-              {selected.has(contact.id) && (
-                <Check className="w-5 h-5 text-purple-600" />
-              )}
+          {filteredContacts.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              未找到匹配的联系人
             </div>
-          ))}
+          ) : (
+            filteredContacts.map(contact => (
+              <div
+                key={contact.id}
+                onClick={() => handleToggleContact(contact)}
+                className={`flex items-center justify-between p-3 cursor-pointer rounded-lg ${
+                  selected.has(contact.id) ? 'bg-blue-50' : 'hover:bg-gray-50'
+                }`}
+              >
+                <div>
+                  <h4 className="font-medium">{contact.name}</h4>
+                  <p className="text-sm text-gray-500">{contact.phone}</p>
+                  {contact.group && (
+                    <span className="text-xs text-gray-400">
+                      分组: {contact.group}
+                    </span>
+                  )}
+                </div>
+                {selected.has(contact.id) && (
+                  <Check className="w-5 h-5 text-blue-600" />
+                )}
+              </div>
+            ))
+          )}
         </div>
 
         <div className="flex justify-end space-x-3">
@@ -92,7 +97,7 @@ function ContactSelector({ contacts, selectedContacts, onSelect, onClose }: Cont
           </button>
           <button
             onClick={handleConfirm}
-            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             确认 ({selected.size})
           </button>
